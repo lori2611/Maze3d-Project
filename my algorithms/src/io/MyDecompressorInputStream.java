@@ -5,11 +5,15 @@ import java.io.InputStream;
 
 public class MyDecompressorInputStream extends InputStream {
 
-	InputStream in;
+	private InputStream in;
+	private int counter;
+	private int currByte;
 	
 	public MyDecompressorInputStream(InputStream in) throws IOException {
 		try{
 			this.in = in;
+			this.currByte = 0;
+			this.counter = 0;
 		} catch (Exception e){
 			e.printStackTrace();
 		}
@@ -17,11 +21,28 @@ public class MyDecompressorInputStream extends InputStream {
 	
 	@Override
 	public int read() throws IOException {
-		int i,counter=0;
-		byte[] b;
+
+		// Check if it's the start of the file or the current byte sequence 
+		if(this.counter <= 0)
+		{
+			if((this.currByte=in.read()) == -1)
+			{
+				// Reached to the end of the file
+				return -1;
+			}
+			if((this.counter = in.read()) == -1)
+			{
+				throw new IOException("File reached to the end,missing counter parameter.");
+			}
+			if(this.counter < -1)
+			{
+				throw new IOException("Counter must be possitive number!");
+			}
+		}
 		
-		
-		return 0;
+		// Otherwise,the counter is bigger than 0 so we still in the current byte sequence
+		--counter;
+		return currByte;
 	}
 
 }
