@@ -7,4 +7,10 @@ public class HelloWorld {
 		
 		System.out.println("Hello!");
 	}
+	
+	public void run2()
+	{
+		
+		System.out.println("Test");
+	}
 }
