@@ -3,6 +3,8 @@
  */
 package algorithms.mazeGenerators;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -422,5 +424,42 @@ public class Maze3d{
 		}catch(ArrayIndexOutOfBoundsException msg){
 			throw msg;
 		}
+	}
+	
+	/**
+	 * This method will convert all the maze details into a ByteArray
+	 * It's include Start & End positions,size of the maze and his content.
+	 * @return
+	 * @throws IOException
+	 */
+	public byte[] toByteArray(){
+		
+		byte[] b = new byte[(this.x*this.y*this.z)+36];
+		ByteBuffer buf = ByteBuffer.wrap(b);
+		
+		// Add start position coordinates
+		buf.put((byte) this.pStart.getX());
+		buf.put((byte) this.pStart.getY());
+		buf.put((byte) this.pStart.getZ());
+		
+		// Add end position coordinates
+		buf.put((byte) this.pEnd.getX());
+		buf.put((byte) this.pEnd.getY());
+		buf.put((byte) this.pEnd.getZ());
+		
+		// Add size of maze
+		buf.put((byte) this.x);
+		buf.put((byte) this.y);
+		buf.put((byte) this.z);
+		
+		// Add the content of the maze to our byteBuffer
+		for (int i = 0; i < this.z; i++) {
+			for (int j = 0; j < this.x; j++) {
+				for (int k = 0; k < this.y; k++) {
+					buf.put((byte) this.maze3d[j][k][i]);
+				}
+			}
+		}
+		return b;
 	}
 }
