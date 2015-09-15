@@ -1,6 +1,6 @@
 /*
  * 
- */
+ 
 package algorithms.demo;
 
 import algorithms.mazeGenerators.Maze3d;
@@ -14,16 +14,16 @@ import algorithms.search.MazeManhattanDistance;
 import algorithms.search.Searchable;
 import algorithms.search.Searcher;
 import algorithms.search.Solution;
-/**
+*//**
  * 
  * @author Lori Atar
  * The class Demo
- */
+ *//*
 public class Demo {
 
-	/**
+	*//**
 	 * Run.
-	 */
+	 *//*
 	public static void Run()
 	{
 		// Create the maze 
@@ -59,14 +59,15 @@ public class Demo {
 		System.out.println(sol3);
 	}
 	
-	/**
+	*//**
 	 * The main method.
 	 *
 	 * @param args the arguments
-	 */
+	 *//*
 	public static void main(String[] args) {			
 		Run();
 		System.out.println("DONE");
 	}
 
 }
+*/

@@ -37,36 +37,33 @@ public class MyCompressorOutputStream extends OutputStream {
 	 */
 	public void write(int b) throws IOException{
 
-		// Check that 'b' is valid
-		if(b==0 || b==1)
+		// First case - check if it's out first byte
+		if(this.counter == 0)
 		{
-			// First case - check if it's out first byte
-			if(this.counter == 0)
-			{
-				++this.counter;
-				prevByte = b;
-				return;
-			}
+			++this.counter;
+			prevByte = b;
+			return;
+		}
 			
-			// Second case - check if the current byte is equal to the previous one
-			if(this.prevByte == b)
-			{
-				++this.counter;
-			}
+		// Second case - check if the current byte is equal to the previous one
+		if(this.prevByte == b)
+		{
+			++this.counter;
+		}
 			
-			// Third case - if the next byte is different - commit data and set the next parameters details.
-			else
-			{
-				try{
-					out.write(prevByte);
-					out.write(counter);
-					this.counter = 1;
-					this.prevByte = b;
-				} catch (Exception e) {
-					throw new IOException("Specified file doesn't found.");
-				}
+		// Third case - if the next byte is different - commit data and set the next parameters details.
+		else
+		{
+			try{
+				out.write(prevByte);
+				out.write(counter);
+				this.counter = 1;
+				this.prevByte = b;
+			} catch (Exception e) {
+				throw new IOException("Specified file doesn't found.");
 			}
 		}
+		
 	}
 	
 	/**
@@ -88,8 +85,8 @@ public class MyCompressorOutputStream extends OutputStream {
 		if(this.counter > 0)
 		{
 			try {
-				out.write(this.prevByte);
-				out.write(this.counter);
+				out.write((byte)this.prevByte);
+				out.write((byte)this.counter);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

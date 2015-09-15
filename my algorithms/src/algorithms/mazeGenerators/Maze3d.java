@@ -54,7 +54,9 @@ public class Maze3d{
 	 * @param b
 	 */
 	public Maze3d(byte[] b) {
+		
 		ByteBuffer buf = ByteBuffer.wrap(b);
+		buf.position(0);
 		
 		// Set start position from first 12 bytes
 		Position p = new Position(buf.getInt(), buf.getInt(), buf.getInt());
@@ -64,10 +66,15 @@ public class Maze3d{
 		p = new Position(buf.getInt(), buf.getInt(), buf.getInt());
 		this.setGoalPosition(p);
 		
+		//System.out.println("start: " + this.getStartPosition() + " ,end: " + this.getGoalPosition());
+		
 		// Set maze bounds
 		this.x = buf.getInt();
 		this.y = buf.getInt();
 		this.z = buf.getInt();
+
+		// Create the maze with the specified bounds
+		maze3d = new int[x][y][z];
 		
 		// Set maze content
 		for (int i = 0; i < this.z; i++) {
@@ -75,10 +82,12 @@ public class Maze3d{
 				for (int k = 0; k < this.y; k++) {
 					
 					// Read bytes into the maze3d
-					this.maze3d[j][k][i] = buf.get();
+					
+					this.maze3d[j][k][i] = (int)buf.get();
 				}
 			}
 		}
+		
 	}
 	
 	/**
@@ -467,23 +476,25 @@ public class Maze3d{
 	 */
 	public byte[] toByteArray(){
 		
+		// Create array of bytes with the size of the maze + 36 (9 ints * 4 bytes)
+		// The 9 int numbers belong the the size of the maze and to the Start & End positions
 		byte[] b = new byte[(this.x*this.y*this.z)+36];
 		ByteBuffer buf = ByteBuffer.wrap(b);
 		
 		// Add start position coordinates
-		buf.put((byte) this.pStart.getX());
-		buf.put((byte) this.pStart.getY());
-		buf.put((byte) this.pStart.getZ());
+		buf.putInt(this.pStart.getX());
+		buf.putInt(this.pStart.getY());
+		buf.putInt(this.pStart.getZ());
 		
 		// Add end position coordinates
-		buf.put((byte) this.pEnd.getX());
-		buf.put((byte) this.pEnd.getY());
-		buf.put((byte) this.pEnd.getZ());
+		buf.putInt(this.pEnd.getX());
+		buf.putInt(this.pEnd.getY());
+		buf.putInt(this.pEnd.getZ());
 		
 		// Add size of maze
-		buf.put((byte) this.x);
-		buf.put((byte) this.y);
-		buf.put((byte) this.z);
+		buf.putInt(this.x);
+		buf.putInt(this.y);
+		buf.putInt(this.z);
 		
 		for (int i = 0; i < this.z; i++) {
 			for (int j = 0; j < this.x; j++) {
