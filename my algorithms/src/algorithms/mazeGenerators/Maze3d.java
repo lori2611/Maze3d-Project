@@ -49,6 +49,39 @@ public class Maze3d{
 	}
 	
 	/**
+	 * This c'tor will create a maze using only bytes array which include all
+	 * maze's details.
+	 * @param b
+	 */
+	public Maze3d(byte[] b) {
+		ByteBuffer buf = ByteBuffer.wrap(b);
+		
+		// Set start position from first 12 bytes
+		Position p = new Position(buf.getInt(), buf.getInt(), buf.getInt());
+		this.setStartPosition(p);
+		
+		// Set end position from the other 12 bytes
+		p = new Position(buf.getInt(), buf.getInt(), buf.getInt());
+		this.setGoalPosition(p);
+		
+		// Set maze bounds
+		this.x = buf.getInt();
+		this.y = buf.getInt();
+		this.z = buf.getInt();
+		
+		// Set maze content
+		for (int i = 0; i < this.z; i++) {
+			for (int j = 0; j < this.x; j++) {
+				for (int k = 0; k < this.y; k++) {
+					
+					// Read bytes into the maze3d
+					this.maze3d[j][k][i] = buf.get();
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Gets the maze3d.
 	 *
 	 * @return the maze3d
@@ -452,10 +485,11 @@ public class Maze3d{
 		buf.put((byte) this.y);
 		buf.put((byte) this.z);
 		
-		// Add the content of the maze to our byteBuffer
 		for (int i = 0; i < this.z; i++) {
 			for (int j = 0; j < this.x; j++) {
 				for (int k = 0; k < this.y; k++) {
+					
+					// Add the content of the maze to our byteBuffer
 					buf.put((byte) this.maze3d[j][k][i]);
 				}
 			}
