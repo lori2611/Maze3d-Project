@@ -87,7 +87,6 @@ public class Maze3d{
 				}
 			}
 		}
-		
 	}
 	
 	/**
@@ -507,4 +506,39 @@ public class Maze3d{
 		}
 		return b;
 	}
+
+	/**
+	 * This method will check if maze we got as parameter is equal to our maze.
+	 * it will compare every cell between the mazes;
+	 * @param maze
+	 * @return
+	 */
+	public boolean equals(Maze3d maze)
+	{
+		boolean isEqual = true;
+		
+		// Make sure that the specified maze has the same bounds as our maze
+		if(maze.getX() == this.getX() && maze.getY() == this.getY() && maze.getZ() == this.getZ())
+		{
+			for (int i = 0; i < this.getZ(); i++) {
+				for (int j = 0; j < this.getX(); j++) {
+					for (int k = 0; k < this.getY(); k++) {
+						if(this.maze3d[j][k][i] != maze.getPositionValue(j, k, i))
+						{
+							isEqual = false;
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			// If the bounds are different
+			isEqual = false;
+		}
+		return isEqual;
+	}
+
+
 }
+
