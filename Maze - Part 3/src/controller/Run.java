@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.MyMaze3dGenerator;
 import io.MyCompressorOutputStream;
@@ -12,6 +13,13 @@ import io.MyDecompressorInputStream;
 
 public class Run {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 * @throws FileNotFoundException the file not found exception
+	 * @throws Exception the exception
+	 */
 	public static void main(String[] args) throws FileNotFoundException, Exception {
 		
 		// Generate maze

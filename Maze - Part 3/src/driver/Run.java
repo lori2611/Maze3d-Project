@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.MyMaze3dGenerator;
 import io.MyCompressorOutputStream;
