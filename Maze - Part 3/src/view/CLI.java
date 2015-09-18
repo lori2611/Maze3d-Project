@@ -17,7 +17,7 @@ public class CLI implements Runnable{
 	
 	// HashMap include String - the name of the command,Command - the action the user choose
 	private HashMap<String,Command> commands; 	
-	
+	// private View v;
 	
 	/**
 	 * Instantiates a new cli.

@@ -1,7 +1,13 @@
 package model;
 
-import java.util.Observable;
+import controller.Controller;
 
-public class MyModel extends Observable implements Model {
+public class MyModel implements Model {
 
+	private Controller c;
+	
+	public MyModel(Controller c) {
+		this.c = c;
+	}
+	
 }
