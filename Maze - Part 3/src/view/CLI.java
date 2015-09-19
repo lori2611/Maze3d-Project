@@ -15,21 +15,17 @@ public class CLI implements Runnable{
 	private BufferedReader in;
 	private PrintWriter out;
 	
-	// HashMap include String - the name of the command,Command - the action the user choose
-	private HashMap<String,Command> commands; 	
-	// private View v;
 	
 	/**
-	 * Instantiates a new cli.
+	 * Instantiates a new CLI.
 	 *
 	 * @param in the in
 	 * @param out the out
 	 * @param commands the commands
 	 */
-	public CLI(BufferedReader in,PrintWriter out,HashMap<String, Command> commands) {	
+	public CLI(BufferedReader in,PrintWriter out) {	
 		this.in = in;
 		this.out = out;
-		this.commands = commands;
 	}
 	
 	/**
@@ -40,16 +36,8 @@ public class CLI implements Runnable{
 		try {
 			System.out.println("Please enter your command: ");
 			String input = in.readLine();
-			while(!input.equals("exit"))
-			{
-				System.out.println("Please enter your command: ");
-				input = in.readLine();
-				if(commands.containsKey(input))
-				{
-					commands.get(input).doCommand();
-				}
-			}
-		} catch (IOException e) {
+			String[] params = input.split(" ");
+			} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

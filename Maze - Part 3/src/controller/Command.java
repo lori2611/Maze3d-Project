@@ -5,5 +5,5 @@ public interface Command {
 	/**
 	 * Do command.
 	 */
-	public void doCommand();
+	public void doCommand(String[] args);
 }
