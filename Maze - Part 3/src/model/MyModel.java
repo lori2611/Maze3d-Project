@@ -1,8 +1,6 @@
 package model;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import controller.Controller;
 
@@ -10,9 +8,7 @@ public class MyModel implements Model {
 
 	private Controller c;
 	
-	public MyModel(Controller c) {
-		this.c = c;
-	}
+	public MyModel() {}
 	
 	public void dir(String path) {
 		File file = new File(path);
@@ -20,4 +16,7 @@ public class MyModel implements Model {
 		c.passDir(files);
 	}
 	
+	public void setC(Controller c) {
+		this.c = c;
+	}
 }

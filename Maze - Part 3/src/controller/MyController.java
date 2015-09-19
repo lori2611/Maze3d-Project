@@ -11,26 +11,60 @@ public class MyController implements Controller {
 	private Model m;
 	HashMap<String,Command> commands;
 	
-	public MyController() {
+	/**
+	 * C'tor
+	 * @param m
+	 * @param v
+	 */
+	public MyController(Model m, View v) {
+		this.m = m;
+		this.v = v;
 		commands = new HashMap<String,Command>();
-		commands.put("dir", new Dir(m,v));
+		initCommands();
 	}
 	
-	public void setV(View v) {
-		this.v = v;
-	}
-
-	public void setM(Model m) {
-		this.m = m;
-	}
-
-	public void passDir(String[] files) {
-		v.printDir(files);
-	}
-
+	/**
+	 * Return Commands HashMap
+	 */
 	public HashMap<String, Command> getCommands() {
 		return commands;
 	}
 	
+	/**
+	 * Set view
+	 */
+	public void setV(View v) {
+		this.v = v;
+	}
+
+	/**
+	 * Set Model
+	 */
+	public void setM(Model m) {
+		this.m = m;
+	}
 	
+	/**
+	 * Initialize commands into the controller
+	 */
+	public void initCommands() {
+		commands.put("dir", new Dir(m,v));
+		v.setCommands(this.commands);
+	}
+
+	/**
+	 * Pass 'DIR' result to the view
+	 */
+	public void passDir(String[] files) {
+		v.printDir(files);
+	}
+	
+	/**
+	 * Pass error exception to the view
+	 * @param e
+	 */
+	public void passError(Exception e)
+	{
+		v.printError(e);
+	}
 }
