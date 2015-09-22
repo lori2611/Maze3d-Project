@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import algorithms.mazeGenerators.Maze3d;
 import controller.Command;
 import controller.Controller;
 
@@ -50,6 +52,16 @@ public class MyView implements View {
 	
 	public void printError(Exception e) {
 		e.printStackTrace();
+	}
+	
+	public void printMazes(ArrayList<Maze3d> mazes) {
+		int i = 0;
+		for(Maze3d maze : mazes)
+		{
+			cli.getOut().println("Maze number " + (++i) + ": ");
+			cli.getOut().println(maze);
+			cli.getOut().flush();
+		}
 	}
 	
 }

@@ -2,8 +2,10 @@ package view;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import algorithms.mazeGenerators.Maze3d;
 import controller.Command;
 import controller.Controller;
 
@@ -36,4 +38,6 @@ public interface View {
 	public void passInput(String input);
 	
 	public void printMessage(String s);
+	
+	public void printMazes(ArrayList<Maze3d> arrayList);
 }

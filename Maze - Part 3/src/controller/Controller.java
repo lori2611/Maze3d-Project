@@ -1,7 +1,9 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import algorithms.mazeGenerators.Maze3d;
 import model.Model;
 import view.View;
 
@@ -34,4 +36,8 @@ public interface Controller {
 	public void analyzeCommand(String input);
 	
 	public void passMessage(String s);
+	
+	public void passMazes(ArrayList<Maze3d> arrayList);
+	
+	public void passError(Exception e);
 }

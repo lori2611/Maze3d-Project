@@ -17,4 +17,6 @@ public interface Model {
 	public void setC(Controller c);
 	
 	public void generateMaze(String[] args);
+	
+	public void printMazes(String[] args);
 }

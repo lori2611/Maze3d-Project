@@ -1,8 +1,10 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import algorithms.mazeGenerators.Maze3d;
 import model.Model;
 import view.View;
 
@@ -23,6 +25,7 @@ public class MyController implements Controller {
 		commands = new HashMap<String,Command>();
 		commands.put("dir", new Dir(m,v));
 		commands.put("generate", new Generate(m,v));
+		commands.put("display", new DisplayName(m,v));
 	}
 	
 	/**
@@ -65,6 +68,12 @@ public class MyController implements Controller {
 		v.printMessage(s);
 	}
 	
+	@Override
+	public void passMazes(ArrayList<Maze3d> arrayList) {
+		v.printMazes(arrayList);
+		
+	}
+	
 	public void analyzeCommand(String input) {
 		String[] args = input.split(" ");
 		String[] params = null;
@@ -100,6 +109,30 @@ public class MyController implements Controller {
 							getObject(commands, "generate").doCommand(params);
 						}
 						break;
+				}
+			}
+			else
+			{
+				if(input.startsWith("display cross section by "))
+				{
+					
+				}
+				else if (input.startsWith("display solution "))
+				{
+					
+				}
+				else
+				{
+					input = input.replace("display ", "");
+					params = input.split(" ");
+					if(params.length == 1)
+					{
+						getObject(commands, "display").doCommand(params);
+					}
+					else
+					{
+						v.printError(new IOException("Invalid command."));
+					}
 				}
 			}
 		}
