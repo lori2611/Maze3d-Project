@@ -16,7 +16,11 @@ public class MyView implements View {
 	private HashMap<String, Command> commands;
 	
 	public MyView() {
-		this.cli = new CLI(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(System.out)); 
+		this.cli = new CLI(new BufferedReader(new InputStreamReader(System.in)), new PrintWriter(System.out), this); 
+	}
+	
+	public void passInput(String input) {
+		c.analyzeCommand(input);
 	}
 	
 	public void setC(Controller c) {
@@ -25,7 +29,7 @@ public class MyView implements View {
 	
 	public void start() throws IOException{
 		try{
-			cli.run();
+			cli.start();
 		} catch(Exception e) {
 			throw e;
 		}
@@ -34,16 +38,18 @@ public class MyView implements View {
 	public void printDir(String[] files) {
 		for(String file : files)
 		{
-			System.out.println(file);
+			cli.getOut().println(file);
+			cli.getOut().flush();
 		}
+	}
+	
+	public void printMessage(String s) {
+		cli.getOut().println(s);
+		cli.getOut().flush();
 	}
 	
 	public void printError(Exception e) {
 		e.printStackTrace();
 	}
 	
-	public void setCommands(HashMap<String, Command> commands) {
-		this.commands = commands;
-		cli.setCommands(commands);
-	}
 }

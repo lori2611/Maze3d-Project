@@ -26,13 +26,12 @@ public interface Controller {
 	public void setV(View v);
 	
 	/**
-	 * pass files & folders of 'dir' command to the view
+	 * pass files & folders of 'DIR' command to the view
 	 * @param files
 	 */
 	public void passDir(String[] files);
-
-	/**
-	 * Initialize commands into controller's HashMap
-	 */
-	public void initCommands();
+	
+	public void analyzeCommand(String input);
+	
+	public void passMessage(String s);
 }

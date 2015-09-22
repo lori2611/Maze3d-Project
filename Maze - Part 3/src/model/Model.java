@@ -15,4 +15,6 @@ public interface Model {
 	 * @param c
 	 */
 	public void setC(Controller c);
+	
+	public void generateMaze(String[] args);
 }

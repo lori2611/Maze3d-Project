@@ -1,6 +1,7 @@
 package view;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 
 import controller.Command;
@@ -15,7 +16,7 @@ public interface View {
 	public void start() throws IOException;
 	
 	/**
-	 * Prints the result of 'dir' command
+	 * Prints the result of 'DIR' command
 	 * @param files
 	 */
 	public void printDir(String[] files);
@@ -27,14 +28,12 @@ public interface View {
 	public void printError(Exception e);
 	
 	/**
-	 * Set Commands HashMap
-	 * @param commands
-	 */
-	public void setCommands(HashMap<String, Command> commands);
-	
-	/**
 	 * Set Controller
 	 * @param c
 	 */
 	public void setC(Controller c);
+	
+	public void passInput(String input);
+	
+	public void printMessage(String s);
 }

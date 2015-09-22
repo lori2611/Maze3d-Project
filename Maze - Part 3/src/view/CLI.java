@@ -16,75 +16,52 @@ public class CLI implements Runnable{
 	
 	private BufferedReader in;
 	private PrintWriter out;
-	private HashMap<String, Command> commands;
+	private View view;
 	
 	/**
 	 * Instantiates a new CLI.
 	 *
 	 * @param in the in
 	 * @param out the out
-	 * @param commands the commands
+	 * @param view the view
 	 */
-	public CLI(BufferedReader in,PrintWriter out) {	
+	public CLI(BufferedReader in,PrintWriter out,View view) {	
 		this.in = in;
 		this.out = out;
+		this.view = view;
 	}
 	
-	public void setCommands(HashMap<String, Command> commands) {
-		this.commands = commands;
+	public PrintWriter getOut() {
+		return out;
+	}
+
+	public void start()
+	{
+		Thread t = new Thread(this);
+		t.start();
 	}
 	
 	@Override
 	public void run(){
-		
-			out.println("Please enter your command: ");
-			
+		String input;
+		String[] params = null;
+		out.println("Please enter your command: ");
+		out.flush();		
 		try {
-			String input = in.readLine();
-			String[] params = input.split(" ");
-			if(!commands.containsKey(params[0]))
+			input = in.readLine();
+			params = input.split(" ");
+			while(!params[0].equals("exit"))
 			{
-				throw new IOException("Invalid Command");
+				view.passInput(input);
+				out.println("Please enter your command: ");
+				out.flush();
+				input = in.readLine();
 			}
-			else
-			{
-				
-				if(!params[0].equals("display"))
-				{
-					switch(params[0])
-					{
-						case "dir":
-							getObject(commands, "dir").doCommand(params);
-							break;
-					}
-				}
-				else
-				{
-					if(!commands.containsKey(params[1]))
-					{
-						throw new IOException("Invalid Command.");
-					}
-					else
-					{
-						//
-					}
-				}
-			}
-			
-			} catch (IOException e) {
-			e.printStackTrace();
+			out.println("bye bye");
+		} catch (IOException e) {	
+			// Send the exception to the view.
+			view.printError(e);
 		}
-	}
-	
-	public static Command getObject(HashMap<String, Command> commands,String c) {
-		for(String command : commands.keySet())
-		{
-			if(command.equals(c))
-			{
-				return commands.get(command);
-			}
-		}
-		System.out.println("Command doesnt found.");
-		return null;
+		out.close();
 	}
 }
