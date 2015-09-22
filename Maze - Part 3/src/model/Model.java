@@ -16,7 +16,17 @@ public interface Model {
 	 */
 	public void setC(Controller c);
 	
+	/**
+	 * Generate new maze and save it in a HashMap with the specified details.
+	 * @param args
+	 */
 	public void generateMaze(String[] args);
 	
-	public void printMazes(String[] args);
+	/**
+	 * Print all mazes which called by the specified name from the HashMap
+	 * @param args
+	 */
+	public void printMaze(String[] args);
+	
+	public void displayCrossSection(String[] params);
 }

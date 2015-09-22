@@ -31,10 +31,17 @@ public class CLI implements Runnable{
 		this.view = view;
 	}
 	
+	/**
+	 * Return the PrintWriter which defined by the client
+	 * @return out
+	 */
 	public PrintWriter getOut() {
 		return out;
 	}
 
+	/**
+	 * Start the 'run' method of the CLI in different thread
+	 */
 	public void start()
 	{
 		Thread t = new Thread(this);
@@ -42,16 +49,21 @@ public class CLI implements Runnable{
 	}
 	
 	@Override
+	/**
+	 * Run will be activate in a different thread which will get the client command
+	 * and activate the matching methods of the program.
+	 */
 	public void run(){
 		String input;
-		String[] params = null;
 		out.println("Please enter your command: ");
 		out.flush();		
 		try {
 			input = in.readLine();
-			params = input.split(" ");
-			while(!params[0].equals("exit"))
+			
+			// Run while the client doesn't insert "exit"
+			while(!input.equals("exit"))
 			{
+				// Pass the input to the view according to the MVC pattern
 				view.passInput(input);
 				out.println("Please enter your command: ");
 				out.flush();
@@ -59,6 +71,7 @@ public class CLI implements Runnable{
 			}
 			out.println("bye bye");
 		} catch (IOException e) {	
+			
 			// Send the exception to the view.
 			view.printError(e);
 		}

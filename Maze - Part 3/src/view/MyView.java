@@ -40,28 +40,51 @@ public class MyView implements View {
 	public void printDir(String[] files) {
 		for(String file : files)
 		{
+			// Print all files names from the array
 			cli.getOut().println(file);
 			cli.getOut().flush();
 		}
 	}
 	
 	public void printMessage(String s) {
+		
+		// Print the message
 		cli.getOut().println(s);
 		cli.getOut().flush();
 	}
 	
 	public void printError(Exception e) {
 		e.printStackTrace();
+		//////////////////////////
+		System.out.println(e.getMessage());
 	}
 	
-	public void printMazes(ArrayList<Maze3d> mazes) {
-		int i = 0;
-		for(Maze3d maze : mazes)
-		{
-			cli.getOut().println("Maze number " + (++i) + ": ");
-			cli.getOut().println(maze);
-			cli.getOut().flush();
+	public void printMaze(Maze3d maze) {
+
+		// Print the maze
+		cli.getOut().println(maze);
+		cli.getOut().flush();
+	}
+
+	@Override
+	public void printCrossSection(int[][] maze, int length, int width) {
+		String s = "\n";
+		
+		// Build the cross of the maze as a string
+		for (int i = 0; i < length; i++) {
+			s += "[ ";
+			for (int j = 0; j < width; j++) {
+				if(j == width -1)
+					s += maze[i][j];
+				else
+					s = s + maze[i][j] + ","; 
+			}
+			s += " ] \n";
 		}
+		
+		// Print the cross of the maze
+		cli.getOut().println(s);
+		cli.getOut().flush();
 	}
 	
 }

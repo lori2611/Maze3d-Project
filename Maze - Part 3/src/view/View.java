@@ -35,9 +35,27 @@ public interface View {
 	 */
 	public void setC(Controller c);
 	
+	/**
+	 * Pass client's input to the controller according to the MVC pattern
+	 * @param input
+	 */
 	public void passInput(String input);
 	
+	/**
+	 * Print message to the client
+	 * @param s
+	 */
 	public void printMessage(String s);
 	
-	public void printMazes(ArrayList<Maze3d> arrayList);
+	/**
+	 * Print the maze from the HashMap
+	 * @param arrayList
+	 */
+	public void printMaze(Maze3d maze);
+	
+	/**
+	 * Print the cross of the maze
+	 * @param maze
+	 */
+	public void printCrossSection(int[][] maze, int length, int width);
 }
