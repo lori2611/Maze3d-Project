@@ -36,6 +36,7 @@ public class MyController implements Controller {
 		commands.put("save", new SaveMaze(m,v));
 		commands.put("load", new LoadMaze(m,v));
 		commands.put("maze", new MazeSize(m,v));
+		commands.put("file", new FileSize(m,v));
 	}
 	
 	public HashMap<String, Command> getCommands() {
@@ -75,7 +76,7 @@ public class MyController implements Controller {
 		v.printMazeSize(size);
 	}
 	
-	public void passFileSize(int size) {
+	public void passFileSize(long size) {
 		v.printFileSize(size);
 	}
 	
@@ -90,146 +91,175 @@ public class MyController implements Controller {
 		}
 		else
 		{
-			// Check if the first word of command is unique
-			if(!input.startsWith("display"))
-			{
 				switch(args[0])
 				{
-					case "dir":
-						if(args.length == 2)
-						{
-							// Cut the 'dir' from the command and send only the parameters
-							input = input.replace("dir ","");
-							params = input.split(" ");
-							commands.get("dir").doCommand(params);
-						}
-						else
-						{
-							v.printMessage(NumOfParams_ERR);
-						}
-						break;
+				case "dir":
+					if(args.length == 2)
+					{
+						// Cut the 'dir' from the command and send only the parameters
+						input = input.replace("dir ","");
+						params = input.split(" ");
+						commands.get("dir").doCommand(params);
+					}
+					else
+					{
+						v.printMessage(NumOfParams_ERR);
+					}
+					break;
 						
-					case "generate":
-						if(args.length == 7)
-						{
-							if(input.startsWith("generate 3d maze "))
-							{
-								// Cut the statement of the command and send only the parameters
-								input = input.replace("generate 3d maze ","");
-								params = input.split(" ");
-								commands.get("generate").doCommand(params);
-							}
-							else
-							{
-								v.printMessage(COMMAND_ERR);
-							}
-						}
-						else
-						{
-							v.printMessage(NumOfParams_ERR);
-						}
-						break;
-					case "save":
-						if(args.length == 4)
-						{
-							if(input.startsWith("save maze "))
-							{
-								input = input.replace("save maze ", "");
-								params = input.split(" ");
-								commands.get("save").doCommand(params);
-							}
-							else
-							{
-								v.printMessage(COMMAND_ERR);
-							}
-						}
-						else
-						{
-							v.printMessage(NumOfParams_ERR);
-						}
-						break;
-					case "load":
-						if(args.length == 4)
-						{
-							if(input.startsWith("load maze "))
-							{
-								input = input.replace("load maze ", "");
-								params = input.split(" ");
-								commands.get("load").doCommand(params);
-							}
-							else
-							{
-								v.printMessage(COMMAND_ERR);
-							}
-						}
-						else
-						{
-							v.printMessage(NumOfParams_ERR);
-						}
-						break;
-					case "maze":
-						if(args.length == 3)
-						{
-							if(input.startsWith("maze size "))
-							{
-								input = input.replace("maze size ", "");
-								params = input.split(" ");
-								commands.get("maze").doCommand(params);
-							}
-							else
-							{
-								v.printMessage(COMMAND_ERR);
-							}
-						}
-						else
-						{
-							v.printMessage(NumOfParams_ERR);
-						}
-						break;
-				}
-			}
-			
-			// If the first word is not unique (Many commands start with 'display')
-			else
-			{
-				if(input.startsWith("display cross section by "))
-				{
-					// Cut the statement of the command and send only the parameters
-					input = input.replace("display cross section by ", "");
-					params = input.split(" ");
-					if(params.length == 4)
+				case "generate":
+					if(args.length == 7)
 					{
-						commands.get("cross").doCommand(params);
+						if(input.startsWith("generate 3d maze "))
+						{
+							// Cut the statement of the command and send only the parameters
+							input = input.replace("generate 3d maze ","");
+							params = input.split(" ");
+							commands.get("generate").doCommand(params);
+						}
+						else
+						{
+							v.printMessage(COMMAND_ERR);
+						}
 					}
 					else
 					{
 						v.printMessage(NumOfParams_ERR);
 					}
-				}
-				else if (input.startsWith("display solution "))
-				{
-					// Cut the statement of the command and send only the parameters
-					input = input.replace("display solution ", "");
-					params = input.split(" ");
-					/**
-					 * Body
-					 */
-				}
-				else
-				{
-					// Cut the statement of the command and send only the parameters
-					input = input.replace("display ", "");
-					params = input.split(" ");
-					if(params.length == 1)
+					break;
+					
+				case "save":
+					if(args.length == 4)
 					{
-						commands.get("display").doCommand(params);
+						if(input.startsWith("save maze "))
+						{
+							input = input.replace("save maze ", "");
+							params = input.split(" ");
+							commands.get("save").doCommand(params);
+						}
+						else
+							{
+								v.printMessage(COMMAND_ERR);
+							}
 					}
 					else
 					{
 						v.printMessage(NumOfParams_ERR);
 					}
-				}
+					break;
+					
+				case "load":
+					if(args.length == 4)
+					{
+						if(input.startsWith("load maze "))
+						{
+							input = input.replace("load maze ", "");
+							params = input.split(" ");
+							commands.get("load").doCommand(params);
+						}
+						else
+						{
+							v.printMessage(COMMAND_ERR);
+						}
+					}
+					else
+					{
+						v.printMessage(NumOfParams_ERR);
+					}
+					break;
+					
+				case "maze":
+					if(args.length == 3)
+					{
+						if(input.startsWith("maze size "))
+						{
+							input = input.replace("maze size ", "");
+							params = input.split(" ");
+							commands.get("maze").doCommand(params);
+						}
+						else
+						{
+							v.printMessage(COMMAND_ERR);
+						}
+					}
+					else						{
+						v.printMessage(NumOfParams_ERR);
+					}
+					break;
+					
+				case "file":
+					if(args.length == 3)
+					{
+						if(input.startsWith("file size "))
+						{
+							input = input.replace("file size ", "");
+							params = input.split(" ");
+							commands.get("file").doCommand(params);
+						}
+						else
+						{
+							v.printMessage(COMMAND_ERR);
+						}
+					}
+					else
+					{
+						v.printMessage(NumOfParams_ERR);
+					}
+					break;
+					
+				case "solve":
+					if(args.length == 3)
+					{
+						input = input.replace("solve ", "");
+						params = input.split(" ");
+						commands.get("solve").doCommand(params);
+					}
+					else
+					{
+						v.printMessage(NumOfParams_ERR);
+					}
+					break;
+					
+				case "display":
+					if(input.startsWith("display cross section by "))
+					{
+						// Cut the statement of the command and send only the parameters
+						input = input.replace("display cross section by ", "");
+						params = input.split(" ");
+						if(params.length == 4)
+						{
+							commands.get("cross").doCommand(params);
+						}
+						else
+						{
+							v.printMessage(NumOfParams_ERR);
+						}
+					}
+					else if (input.startsWith("display solution "))
+					{
+						// Cut the statement of the command and send only the parameters
+						input = input.replace("display solution ", "");
+						params = input.split(" ");
+						/**
+						 * Body
+						 */
+					}
+					else
+					{
+						// Cut the statement of the command and send only the parameters
+						input = input.replace("display ", "");
+						params = input.split(" ");
+						if(params.length == 1)
+						{
+							commands.get("display").doCommand(params);
+						}
+						else
+						{
+							v.printMessage(NumOfParams_ERR);
+						}
+					}
+				}	
 			}
 		}
 	}
-}
+

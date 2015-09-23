@@ -66,4 +66,6 @@ public interface Controller {
 	public void passCrossSection(int[][] maze,int length, int width);
 	
 	public void passMazeSize(int size);
+	
+	public void passFileSize(long l);
 }
