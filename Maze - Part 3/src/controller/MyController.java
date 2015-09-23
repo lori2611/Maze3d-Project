@@ -3,28 +3,25 @@
  */
 package controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import algorithms.mazeGenerators.Maze3d;
 import model.Model;
 import view.View;
 
+
 public class MyController implements Controller {
 
-	/** The v. */
-	private View v;
+	private View v; // View
+	private Model m; // Model
+	HashMap<String,Command> commands; // HashMap with the name of the command and the matching object
 	
-	/** The m. */
-	private Model m;
-	
-	/** The commands. */
-	HashMap<String,Command> commands;
+	// Declare all warning - messages
+	public static final String COMMAND_ERR = "Invalid Command \n";	
+	public static final String NumOfParams_ERR= "Invalid number of parameters \n";	
 	
 	/**
 	 * Instantiates a new my controller.
-	 *
 	 * @param m the m
 	 * @param v the v
 	 */
@@ -36,6 +33,9 @@ public class MyController implements Controller {
 		commands.put("generate", new Generate(m,v));
 		commands.put("display", new DisplayName(m,v));
 		commands.put("cross", new DisplayCross(m,v));
+		commands.put("save", new SaveMaze(m,v));
+		commands.put("load", new LoadMaze(m,v));
+		commands.put("maze", new MazeSize(m,v));
 	}
 	
 	public HashMap<String, Command> getCommands() {
@@ -71,15 +71,26 @@ public class MyController implements Controller {
 		v.printCrossSection(maze,length,width);
 	}
 	
+	public void passMazeSize(int size) {
+		v.printMazeSize(size);
+	}
+	
+	public void passFileSize(int size) {
+		v.printFileSize(size);
+	}
+	
 	public void analyzeCommand(String input) {
 		String[] args = input.split(" ");
 		String[] params = null;
+		
+		// Check if first word of command exist in HashMap
 		if(!commands.containsKey(args[0]))
 		{
-			v.printError(new IOException("Invalid Command"));
+			v.printMessage(COMMAND_ERR);
 		}
 		else
 		{
+			// Check if the first word of command is unique
 			if(!input.startsWith("display"))
 			{
 				switch(args[0])
@@ -87,13 +98,14 @@ public class MyController implements Controller {
 					case "dir":
 						if(args.length == 2)
 						{
+							// Cut the 'dir' from the command and send only the parameters
 							input = input.replace("dir ","");
 							params = input.split(" ");
 							commands.get("dir").doCommand(params);
 						}
 						else
 						{
-							v.printError(new IOException("Invalid number of parameters"));
+							v.printMessage(NumOfParams_ERR);
 						}
 						break;
 						
@@ -102,26 +114,87 @@ public class MyController implements Controller {
 						{
 							if(input.startsWith("generate 3d maze "))
 							{
+								// Cut the statement of the command and send only the parameters
 								input = input.replace("generate 3d maze ","");
 								params = input.split(" ");
 								commands.get("generate").doCommand(params);
 							}
 							else
 							{
-								v.printError(new IOException("Invalid Command"));
+								v.printMessage(COMMAND_ERR);
 							}
 						}
 						else
 						{
-							v.printError(new IOException("Invalid number of parameters"));
+							v.printMessage(NumOfParams_ERR);
+						}
+						break;
+					case "save":
+						if(args.length == 4)
+						{
+							if(input.startsWith("save maze "))
+							{
+								input = input.replace("save maze ", "");
+								params = input.split(" ");
+								commands.get("save").doCommand(params);
+							}
+							else
+							{
+								v.printMessage(COMMAND_ERR);
+							}
+						}
+						else
+						{
+							v.printMessage(NumOfParams_ERR);
+						}
+						break;
+					case "load":
+						if(args.length == 4)
+						{
+							if(input.startsWith("load maze "))
+							{
+								input = input.replace("load maze ", "");
+								params = input.split(" ");
+								commands.get("load").doCommand(params);
+							}
+							else
+							{
+								v.printMessage(COMMAND_ERR);
+							}
+						}
+						else
+						{
+							v.printMessage(NumOfParams_ERR);
+						}
+						break;
+					case "maze":
+						if(args.length == 3)
+						{
+							if(input.startsWith("maze size "))
+							{
+								input = input.replace("maze size ", "");
+								params = input.split(" ");
+								commands.get("maze").doCommand(params);
+							}
+							else
+							{
+								v.printMessage(COMMAND_ERR);
+							}
+						}
+						else
+						{
+							v.printMessage(NumOfParams_ERR);
 						}
 						break;
 				}
 			}
+			
+			// If the first word is not unique (Many commands start with 'display')
 			else
 			{
 				if(input.startsWith("display cross section by "))
 				{
+					// Cut the statement of the command and send only the parameters
 					input = input.replace("display cross section by ", "");
 					params = input.split(" ");
 					if(params.length == 4)
@@ -130,15 +203,21 @@ public class MyController implements Controller {
 					}
 					else
 					{
-						v.printError(new IOException("Invalid number of parameters"));
+						v.printMessage(NumOfParams_ERR);
 					}
 				}
 				else if (input.startsWith("display solution "))
 				{
-					
+					// Cut the statement of the command and send only the parameters
+					input = input.replace("display solution ", "");
+					params = input.split(" ");
+					/**
+					 * Body
+					 */
 				}
 				else
 				{
+					// Cut the statement of the command and send only the parameters
 					input = input.replace("display ", "");
 					params = input.split(" ");
 					if(params.length == 1)
@@ -147,7 +226,7 @@ public class MyController implements Controller {
 					}
 					else
 					{
-						v.printError(new IOException("Invalid number of parameters"));
+						v.printMessage(NumOfParams_ERR);
 					}
 				}
 			}

@@ -20,13 +20,21 @@ public interface Model {
 	 * Generate new maze and save it in a HashMap with the specified details.
 	 * @param args
 	 */
-	public void generateMaze(String[] args);
+	public void generateMaze(String[] params);
 	
 	/**
 	 * Print all mazes which called by the specified name from the HashMap
 	 * @param args
 	 */
-	public void printMaze(String[] args);
+	public void printMaze(String[] params);
 	
 	public void displayCrossSection(String[] params);
+	
+	public void saveMaze(String[] params);
+	
+	public void loadMaze(String[] params);
+	
+	public void calcMazeSize(String[] params);
+	
+	public void calcFileSize(String[] params);
 }

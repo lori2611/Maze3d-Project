@@ -64,4 +64,6 @@ public interface Controller {
 	 * @param maze
 	 */
 	public void passCrossSection(int[][] maze,int length, int width);
+	
+	public void passMazeSize(int size);
 }

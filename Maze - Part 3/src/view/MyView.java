@@ -55,8 +55,7 @@ public class MyView implements View {
 	
 	public void printError(Exception e) {
 		e.printStackTrace();
-		//////////////////////////
-		System.out.println(e.getMessage());
+		System.out.println("option2: " + e.getMessage());
 	}
 	
 	public void printMaze(Maze3d maze) {
@@ -87,4 +86,17 @@ public class MyView implements View {
 		cli.getOut().flush();
 	}
 	
+	public void printMazeSize(int size) {
+		
+		// Print the size of the maze in bytes
+		cli.getOut().println(size);
+		cli.getOut().flush();
+	}
+	
+	public void printFileSize(int size) {
+		
+		// Print the size of the file which saves maze 
+		cli.getOut().println(size);
+		cli.getOut().flush();
+	}
 }

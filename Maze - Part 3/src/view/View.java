@@ -58,4 +58,6 @@ public interface View {
 	 * @param maze
 	 */
 	public void printCrossSection(int[][] maze, int length, int width);
+	
+	public void printMazeSize(int size);
 }
