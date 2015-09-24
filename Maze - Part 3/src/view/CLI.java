@@ -65,7 +65,7 @@ public class CLI implements Runnable{
 			{
 				// Pass the input to the view according to the MVC pattern
 				view.passInput(input);
-				out.println("Please enter your command: ");
+				out.println("\nPlease enter your command: ");
 				out.flush();
 				input = in.readLine();
 			}

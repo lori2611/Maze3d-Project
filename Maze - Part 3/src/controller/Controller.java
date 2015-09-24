@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import algorithms.mazeGenerators.Maze3d;
+import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
 import model.Model;
 import view.View;
 
@@ -68,4 +70,6 @@ public interface Controller {
 	public void passMazeSize(int size);
 	
 	public void passFileSize(long l);
+	
+	public void passSolution(Solution<Position> sol);
 }

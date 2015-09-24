@@ -3,7 +3,7 @@ package controller;
 import model.Model;
 import view.View;
 
-public class Generate extends AbstractCommand implements Runnable {
+public class Generate extends AbstractCommand {
 
 	public String[] params;
 	
@@ -23,18 +23,12 @@ public class Generate extends AbstractCommand implements Runnable {
 	 * when the maze is ready.  
 	 */
 	public void doCommand(String[] params) {
-		this.params = params;
-		Thread t = new Thread(this);
-		t.start();
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				m.solveMaze(params);
+			}
+		} ).start();
 	}
-
-	@Override
-	/**
-	 * This method will run in a different thread and will generate new maze
-	 * with bounds which the client defined.
-	 */
-	public void run() {
-		m.generateMaze(this.params);
-	}
-
 }

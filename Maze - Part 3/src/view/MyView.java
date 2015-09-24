@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import algorithms.mazeGenerators.Maze3d;
+import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
 import controller.Command;
 import controller.Controller;
 
@@ -62,6 +64,13 @@ public class MyView implements View {
 
 		// Print the maze
 		cli.getOut().println(maze);
+		cli.getOut().flush();
+	}
+	
+	public void printSolution(Solution<Position> sol) {
+		
+		// Print Solution
+		cli.getOut().println(sol);
 		cli.getOut().flush();
 	}
 

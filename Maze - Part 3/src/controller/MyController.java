@@ -6,6 +6,8 @@ package controller;
 import java.util.HashMap;
 
 import algorithms.mazeGenerators.Maze3d;
+import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
 import model.Model;
 import view.View;
 
@@ -37,6 +39,7 @@ public class MyController implements Controller {
 		commands.put("load", new LoadMaze(m,v));
 		commands.put("maze", new MazeSize(m,v));
 		commands.put("file", new FileSize(m,v));
+		commands.put("solve", new Solve(m,v));
 	}
 	
 	public HashMap<String, Command> getCommands() {
@@ -78,6 +81,10 @@ public class MyController implements Controller {
 	
 	public void passFileSize(long size) {
 		v.printFileSize(size);
+	}
+	
+	public void passSolution(Solution<Position> sol) {
+		v.printSolution(sol);
 	}
 	
 	public void analyzeCommand(String input) {

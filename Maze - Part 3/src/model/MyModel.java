@@ -9,8 +9,17 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 import algorithms.mazeGenerators.Maze3d;
+import algorithms.mazeGenerators.Maze3dSearchable;
 import algorithms.mazeGenerators.MyMaze3dGenerator;
 import algorithms.mazeGenerators.Position;
+import algorithms.search.AStar;
+import algorithms.search.BFS;
+import algorithms.search.Heuristic;
+import algorithms.search.MazeAirDistance;
+import algorithms.search.MazeManhattanDistance;
+import algorithms.search.Searchable;
+import algorithms.search.Searcher;
+import algorithms.search.Solution;
 import controller.Controller;
 import io.MyCompressorOutputStream;
 import io.MyDecompressorInputStream;
@@ -29,11 +38,19 @@ public class MyModel implements Model {
 	}
 	
 	public void dir(String path) {
+		try {
+		String[] files = null;
 		File file = new File(path);
-		
 		// Save all files names in an array
-		String[] files = file.list();
+		files = file.list();
+		if(files.length == 0)
+		{
+			c.passMessage("Folder is empty ");
+		}
 		c.passDir(files);
+		} catch (Exception e) {
+			c.passMessage("Invalid Path ");
+		}
 	}
 	
 	public void generateMaze(String[] params) {
@@ -188,7 +205,34 @@ public class MyModel implements Model {
 	
 	public void solveMaze(String[] params) {
 		
+		String mazeName = params[0];
+		String algorithm = params[1].toLowerCase();
+		Searcher<Position> algo = null;
+		Solution<Position> sol = null;
 		
-		c.passMessage("solution for " + params[0] + " is ready");
+		if(mazes.containsKey(mazeName))
+		{
+			Searchable<Position> sm = new Maze3dSearchable(mazes.get(mazeName));
+			if(algorithm.equals("bfs"))
+			{
+				algo = new BFS<Position>();
+			}
+			else if(algorithm.equals("manhattan"))
+			{
+				Heuristic<Position> ManhattanDistance = new MazeManhattanDistance();
+				algo = new AStar<Position>(ManhattanDistance);
+			}
+			else if(algorithm.equals("air"))
+			{
+				Heuristic<Position> AirDistance = new MazeAirDistance();
+				algo = new AStar<Position>(AirDistance);
+			}
+			sol = algo.search(sm);
+			c.passMessage("solution for " + mazeName + " is ready");
+		}
+		else
+		{
+			c.passMessage("Specified name doesn't found");
+		}
 	}
 }
