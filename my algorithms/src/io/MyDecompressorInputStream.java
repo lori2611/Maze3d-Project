@@ -10,13 +10,9 @@ public class MyDecompressorInputStream extends InputStream {
 	private int currByte;
 	
 	public MyDecompressorInputStream(InputStream in) throws IOException {
-		try{
-			this.in = in;
-			this.currByte = 0;
-			this.counter = 0;
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+		this.in = in;
+		this.currByte = 0;
+		this.counter = 0;
 	}
 	
 	@Override
@@ -33,10 +29,6 @@ public class MyDecompressorInputStream extends InputStream {
 			if((this.counter = in.read()) == -1)
 			{
 				throw new IOException("File reached to the end,missing counter parameter.");
-			}
-			if(this.counter < -1)
-			{
-				throw new IOException("Counter must be possitive number!");
 			}
 		}
 		

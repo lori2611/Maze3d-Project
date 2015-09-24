@@ -178,11 +178,17 @@ public class MyModel implements Model {
 		File file = new File(params[0]);
 		if(file.exists())
 		{
-			file.length();
+			c.passFileSize(file.length());
 		}
 		else
 		{
 			c.passMessage("File doesn't exist");
 		}
+	}
+	
+	public void solveMaze(String[] params) {
+		
+		
+		c.passMessage("solution for " + params[0] + " is ready");
 	}
 }

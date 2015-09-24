@@ -89,14 +89,14 @@ public class MyView implements View {
 	public void printMazeSize(int size) {
 		
 		// Print the size of the maze in bytes
-		cli.getOut().println(size);
+		cli.getOut().println(size + " bytes");
 		cli.getOut().flush();
 	}
 	
-	public void printFileSize(int size) {
+	public void printFileSize(long size) {
 		
 		// Print the size of the file which saves maze 
-		cli.getOut().println(size);
+		cli.getOut().println(size + " bytes");
 		cli.getOut().flush();
 	}
 }

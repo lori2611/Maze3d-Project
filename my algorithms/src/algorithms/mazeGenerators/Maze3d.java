@@ -13,23 +13,14 @@ import java.util.ArrayList;
  */
 public class Maze3d{
 
-	/** The maze3d. */
-	protected int[][][] maze3d;
+	protected int[][][] maze3d; //The maze3d
 	
-	/** The x. */
-	protected int x;
+	protected int x; // Maze's x
+	protected int y; // Maze's y
+	protected int z; // Maze's z
 	
-	/** The y. */
-	protected int y;
-	
-	/** The z. */
-	protected int z;
-	
-	/** The p start. */
-	protected Position pStart;
-	
-	/** The p end. */
-	protected Position pEnd;
+	protected Position pStart; // Start Position
+	protected Position pEnd; // Goal Position
 	
 	
 	/**

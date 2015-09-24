@@ -60,4 +60,6 @@ public interface View {
 	public void printCrossSection(int[][] maze, int length, int width);
 	
 	public void printMazeSize(int size);
+	
+	public void printFileSize(long size);
 }
