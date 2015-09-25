@@ -30,6 +30,8 @@ public class MyModel implements Model {
 	HashMap<String,Maze3d> mazes;
 	HashMap<String,Solution<Position>> solutions;
 	
+	public static final String NumOfParams_ERR= "Invalid number of parameters \n";
+	
 	public MyModel() {
 		this.mazes = new HashMap<String,Maze3d>();
 		this.solutions = new HashMap<String,Solution<Position>>();
@@ -39,23 +41,34 @@ public class MyModel implements Model {
 		this.c = c;
 	}
 	
-	public void dir(String path) {
-		try {
-		String[] files = null;
-		File file = new File(path);
-		// Save all files names in an array
-		files = file.list();
-		if(files.length == 0)
+	public void dir(String[] params) {
+		if(params.length == 1)
 		{
-			c.passMessage("Folder is empty ");
+			String path = params[0];
+			try {
+					String[] files = null;
+					File file = new File(path);
+					
+					// Save all files names in an array
+					files = file.list();
+					if(files.length == 0)
+					{
+						c.passMessage("Folder is empty ");
+					}
+					c.passDir(files);
+				} catch (Exception e) {
+					c.passMessage("Invalid Path ");
+				}
 		}
-		c.passDir(files);
-		} catch (Exception e) {
-			c.passMessage("Invalid Path ");
+		else
+		{
+			c.passMessage(NumOfParams_ERR);
 		}
 	}
 	
 	public void generateMaze(String[] params) {
+		if(params.length == 4)
+		{
 		new Thread(new Runnable() {
 			
 			@Override
@@ -82,68 +95,142 @@ public class MyModel implements Model {
 				c.passMessage("maze " + mazeName + " is ready");
 			}
 		} ).start();
-	}
-	
-	public void printMaze(String[] params) {
-		String mazeName = params[0];
-		
-		// Check if the specified name exist in the HashMap
-		if(mazes.containsKey(mazeName))
-		{
-			c.passMaze(mazes.get(mazeName));
 		}
 		else
 		{
-			// Pass appropriate message
-			c.passMessage("Specified name doesn't exist.");
+			c.passMessage(NumOfParams_ERR);
 		}
 	}
-
-	public void displayCrossSection(String[] params) {
-		String crossBy = params[0];
-		String index = params[1];
-		String mazeName = params[3];
-		
-		// Check that the name of the maze exist in the HashMap
-		if(mazes.containsKey(params[3]))
+	
+	public void displayMaze(String[] params) {
+		if(params.length == 1)
 		{
-			// Check for the specified cross section
-			switch(crossBy.toLowerCase())
+			String mazeName = params[0];
+		
+			// Check if the specified name exist in the HashMap
+			if(mazes.containsKey(mazeName))
 			{
-				// Pass the right cross section into the controller
-				case "x":	
-					c.passCrossSection(mazes.get(mazeName).getCrossSectionByX(Integer.parseInt(index)),mazes.get(mazeName).getY(),mazes.get(mazeName).getZ());
-					break;
-				case "y":
-					c.passCrossSection(mazes.get(mazeName).getCrossSectionByY(Integer.parseInt(index)),mazes.get(mazeName).getX(),mazes.get(mazeName).getZ());
-					break;
-				case "z":
-					c.passCrossSection(mazes.get(mazeName).getCrossSectionByZ(Integer.parseInt(index)),mazes.get(mazeName).getX(),mazes.get(mazeName).getY());
-					break;
-				default:
-					c.passError(new IOException("Cannot find cross by " + crossBy));
-					break;
+				c.passMaze(mazes.get(mazeName));
+			}
+			else
+			{
+				// Pass appropriate message
+				c.passMessage("Specified name doesn't exist.");
 			}
 		}
 		else
 		{
-			// Name of the maze doesn't exist
-			c.passMessage("Specified name doesn't found");
+			c.passMessage(NumOfParams_ERR);
+		}
+	}
+
+	public void displayCrossSection(String[] params) {
+		if(params.length == 4)
+		{
+			String crossBy = params[0];
+			String index = params[1];
+			String mazeName = params[3];
+		
+			// Check that the name of the maze exist in the HashMap
+			if(mazes.containsKey(params[3]))
+			{
+				// Check for the specified cross section
+				switch(crossBy.toLowerCase())
+				{
+					// Pass the right cross section into the controller
+					case "x":	
+						c.passCrossSection(mazes.get(mazeName).getCrossSectionByX(Integer.parseInt(index)),mazes.get(mazeName).getY(),mazes.get(mazeName).getZ());
+						break;
+					case "y":
+						c.passCrossSection(mazes.get(mazeName).getCrossSectionByY(Integer.parseInt(index)),mazes.get(mazeName).getX(),mazes.get(mazeName).getZ());
+						break;
+					case "z":
+						c.passCrossSection(mazes.get(mazeName).getCrossSectionByZ(Integer.parseInt(index)),mazes.get(mazeName).getX(),mazes.get(mazeName).getY());
+						break;
+					default:
+						c.passError(new IOException("Cannot find cross by " + crossBy));
+						break;
+				}
+			}
+			else
+			{
+				// Name of the maze doesn't exist
+				c.passMessage("Specified name doesn't found");
+			}
+		}
+		else
+		{
+			c.passMessage(NumOfParams_ERR);
 		}
 	}
 	
 	public void saveMaze(String[] params) {
-		String mazeName = params[0];
-		String fileName = params[1];
-		
-		if(mazes.containsKey(params[0]))
+		if(params.length == 2)
 		{
+			String mazeName = params[0];
+			String fileName = params[1];
+		
+			if(mazes.containsKey(params[0]))
+			{
+				try {
+					// Try to save the maze into the file
+					OutputStream out=new MyCompressorOutputStream(new FileOutputStream(fileName));
+					out.write(mazes.get(mazeName).toByteArray());
+					out.flush();
+					out.close();
+				} catch (Exception e) {
+				
+					// Send error to the controller
+					c.passError(e);
+				}
+			}
+			else
+			{
+				// Name of the maze doesn't exist
+				c.passMessage("Specified name doesn't found");
+			}
+		}
+		else
+		{
+			c.passMessage(NumOfParams_ERR);
+		}
+	}
+	
+	public void loadMaze(String[] params) {
+		if(params.length == 2)
+		{
+			int x,y,z;
+			String fileName = params[0];
+			String mazeName = params[1];
 			try {
-				// Try to save the maze into the file
-				OutputStream out=new MyCompressorOutputStream(new FileOutputStream(fileName));
-				out.write(mazes.get(mazeName).toByteArray());
-				out.flush();
-				out.close();
+				
+				// Try to load the maze from the file
+				MyDecompressorInputStream in=new MyDecompressorInputStream(new FileInputStream(fileName));
+				
+				// At the start array we will insert the details of the maze
+				// start position, end position, bounds of array
+				byte[] start = new byte[36];
+				in.read(start,0,start.length);
+				ByteBuffer wrap = ByteBuffer.wrap(start);
+				wrap.position(24);
+				
+				// Keep the bounds of the array
+				x = wrap.getInt();
+				y = wrap.getInt();
+				z = wrap.getInt();
+				
+				// Create array by the size of the maze
+				byte[] end =new byte[x*y*z];
+				in.read(end,0,end.length);
+				
+				// Create full array with all the data of the maze (start details and his pathway data)
+				byte[] full = new byte[start.length + end.length];
+				System.arraycopy(start, 0, full, 0, start.length);
+				System.arraycopy(end, 0, full, start.length, end.length);
+				
+				// Add the maze to the HashMap
+				mazes.put(mazeName, new Maze3d(full));
+				in.close();
 			} catch (Exception e) {
 				
 				// Send error to the controller
@@ -152,134 +239,120 @@ public class MyModel implements Model {
 		}
 		else
 		{
-			// Name of the maze doesn't exist
-			c.passMessage("Specified name doesn't found");
-		}
-	}
-	
-	public void loadMaze(String[] params) {
-		int x,y,z;
-		String fileName = params[0];
-		String mazeName = params[1];
-		try {
-			
-			// Try to load the maze from the file
-			MyDecompressorInputStream in=new MyDecompressorInputStream(new FileInputStream(fileName));
-			
-			// At the start array we will insert the details of the maze
-			// start position, end position, bounds of array
-			byte[] start = new byte[36];
-			in.read(start,0,start.length);
-			ByteBuffer wrap = ByteBuffer.wrap(start);
-			wrap.position(24);
-			
-			// Keep the bounds of the array
-			x = wrap.getInt();
-			y = wrap.getInt();
-			z = wrap.getInt();
-			
-			// Create array by the size of the maze
-			byte[] end =new byte[x*y*z];
-			in.read(end,0,end.length);
-			
-			// Create full array with all the data of the maze (start details and his pathway data)
-			byte[] full = new byte[start.length + end.length];
-			System.arraycopy(start, 0, full, 0, start.length);
-			System.arraycopy(end, 0, full, start.length, end.length);
-			
-			// Add the maze to the HashMap
-			mazes.put(mazeName, new Maze3d(full));
-			in.close();
-		} catch (Exception e) {
-			
-			// Send error to the controller
-			c.passError(e);
+			c.passMessage(NumOfParams_ERR);
 		}
 	}
 	
 	public void calcMazeSize(String[] params) {
-		String mazeName = params[0];
-		if(mazes.containsKey(mazeName))
+		if(params.length == 1)
 		{
-			Maze3d maze = mazes.get(mazeName);
-			c.passMazeSize((maze.toByteArray()).length);
+			String mazeName = params[0];
+			if(mazes.containsKey(mazeName))
+			{
+				Maze3d maze = mazes.get(mazeName);
+				c.passMazeSize((maze.toByteArray()).length);
+			}
+			else
+			{
+				c.passMessage("Specified name doesn't found");
+			}
 		}
 		else
 		{
-			c.passMessage("Specified name doesn't found");
+			c.passMessage(NumOfParams_ERR);
 		}
 	}
 	
 	public void calcFileSize(String[] params) {
-		String fileName = params[0];
-		File file = new File(fileName);
-		if(file.exists())
+		if(params.length == 1)
 		{
-			c.passFileSize(file.length());
+			String fileName = params[0];
+			File file = new File(fileName);
+			if(file.exists())
+			{
+				c.passFileSize(file.length());
+			}
+			else
+			{
+				c.passMessage("File doesn't exist");
+			}	
 		}
 		else
 		{
-			c.passMessage("File doesn't exist");
+			c.passMessage(NumOfParams_ERR);
 		}
 	}
 	
 	public void solveMaze(String[] params) {
-		
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				String mazeName = params[0];
-				String algorithm = params[1].toLowerCase();
-				Searcher<Position> algo = null;
-				Solution<Position> sol = null;
+		if(params.length == 2)
+		{
+			new Thread(new Runnable() {
 				
-				if(mazes.containsKey(mazeName))
-				{
-					Searchable<Position> sm = new Maze3dSearchable(mazes.get(mazeName));
-					if(algorithm.equals("bfs"))
+				@Override
+				public void run() {
+					String mazeName = params[0];
+					String algorithm = params[1].toLowerCase();
+					Searcher<Position> algo = null;
+					Solution<Position> sol = null;
+					
+					if(mazes.containsKey(mazeName))
 					{
-						algo = new BFS<Position>();
+						Searchable<Position> sm = new Maze3dSearchable(mazes.get(mazeName));
+						if(algorithm.equals("bfs"))
+						{
+							algo = new BFS<Position>();
+						}
+						else if(algorithm.equals("manhattan"))
+						{
+							Heuristic<Position> ManhattanDistance = new MazeManhattanDistance();
+							algo = new AStar<Position>(ManhattanDistance);
+						}
+						else if(algorithm.equals("air"))
+						{
+							Heuristic<Position> AirDistance = new MazeAirDistance();
+							algo = new AStar<Position>(AirDistance);
+						}
+						sol = algo.search(sm);
+						solutions.put(mazeName, sol);
+						c.passMessage("solution for " + mazeName + " is ready");
 					}
-					else if(algorithm.equals("manhattan"))
+					else
 					{
-						Heuristic<Position> ManhattanDistance = new MazeManhattanDistance();
-						algo = new AStar<Position>(ManhattanDistance);
+						c.passMessage("Specified name doesn't found");
 					}
-					else if(algorithm.equals("air"))
-					{
-						Heuristic<Position> AirDistance = new MazeAirDistance();
-						algo = new AStar<Position>(AirDistance);
-					}
-					sol = algo.search(sm);
-					solutions.put(mazeName, sol);
-					c.passMessage("solution for " + mazeName + " is ready");
 				}
-				else
-				{
-					c.passMessage("Specified name doesn't found");
-				}
-			}
-		} ).start();
+			} ).start();
+		}
+		else
+		{
+			c.passMessage(NumOfParams_ERR);
+		}
 	}
 
 	@Override
 	public void displaySolution(String[] params) {
-		String mazeName = params[0];
-		if(mazes.containsKey(mazeName))
+		if(params.length == 1)
 		{
-			if(solutions.containsKey(mazeName))
+			String mazeName = params[0];
+			if(mazes.containsKey(mazeName))
 			{
-				c.passSolution(solutions.get(mazeName));
+				if(solutions.containsKey(mazeName))
+				{
+					c.passSolution(solutions.get(mazeName));
+				}
+				else
+				{
+					c.passMessage("The maze has no solution");
+				}
 			}
 			else
 			{
-				c.passMessage("The maze has no solution");
-			}
+				c.passMessage("Specified name doesn't found");
+			}	
 		}
 		else
 		{
-			c.passMessage("Specified name doesn't found");
-		}	
+			c.passMessage(NumOfParams_ERR);
+		}
 	}
 }

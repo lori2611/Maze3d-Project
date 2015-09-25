@@ -18,7 +18,7 @@ public class Dir extends AbstractCommand {
 	 * DoCommand - print all folders and files in specified path 
 	 * according to MVC pattern.
 	 */
-	public void doCommand(String[] location) {
-		m.dir(location[0]);
+	public void doCommand(String[] params) {
+		m.dir(params);
 	}
 }

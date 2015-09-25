@@ -3,14 +3,14 @@ package controller;
 import model.Model;
 import view.View;
 
-public class DisplayName extends AbstractCommand {
+public class DisplayMaze extends AbstractCommand {
 
 	/**
 	 * C'tor
 	 * @param m
 	 * @param v
 	 */
-	public DisplayName(Model m, View v) {
+	public DisplayMaze(Model m, View v) {
 		super(m, v);
 	}
 
@@ -20,7 +20,7 @@ public class DisplayName extends AbstractCommand {
 	 * according to MVC pattern.
 	 */
 	public void doCommand(String[] args) {
-		m.printMaze(args);
+		m.displayMaze(args);
 	}
 
 }

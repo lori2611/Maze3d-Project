@@ -23,7 +23,6 @@ public class MyController implements Controller {
 	
 	// Declare all warning - messages
 	public static final String COMMAND_ERR = "Invalid Command \n";	
-	public static final String NumOfParams_ERR= "Invalid number of parameters \n";
 	private String[] args;
 	private int i;	
 	
@@ -38,7 +37,7 @@ public class MyController implements Controller {
 		commands = new HashMap<String,Command>();
 		commands.put("dir", new Dir(m,v));
 		commands.put("generate 3d maze", new Generate(m,v));
-		commands.put("display", new DisplayName(m,v));
+		commands.put("display", new DisplayMaze(m,v));
 		commands.put("display cross section by", new DisplayCross(m,v));
 		commands.put("save maze", new SaveMaze(m,v));
 		commands.put("load maze", new LoadMaze(m,v));
@@ -106,7 +105,7 @@ public class MyController implements Controller {
 		}
 		if(input.equals(""))
 		{
-			v.printMessage("Invalid command");
+			v.printMessage(COMMAND_ERR);
 		}
 		else
 		{
