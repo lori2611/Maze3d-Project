@@ -28,9 +28,11 @@ public class MyModel implements Model {
 
 	private Controller c;
 	HashMap<String,Maze3d> mazes;
+	HashMap<String,Solution<Position>> solutions;
 	
 	public MyModel() {
 		this.mazes = new HashMap<String,Maze3d>();
+		this.solutions = new HashMap<String,Solution<Position>>();
 	}
 	
 	public void setC(Controller c) {
@@ -54,34 +56,41 @@ public class MyModel implements Model {
 	}
 	
 	public void generateMaze(String[] params) {
-		
-		// Set maze bounds in x, y, z
-		int x = Integer.parseInt(params[1]), y = Integer.parseInt(params[2]), z = Integer.parseInt(params[3]);
-		
-		// Create and generate new maze with specified bounds
-		MyMaze3dGenerator mg = new MyMaze3dGenerator();
-		Maze3d maze= mg.generate(x, y, z);
-		
-		// Check if the name of the maze already exist
-		if(this.mazes.containsKey(params[0]))
-		{
-			c.passMessage("The specified name is already in use.");
-			return;
-		}
-		else
-		{
-			mazes.put(params[0], maze);	
-		}
-		String msg = "maze " + params[0] + " is ready";
-		c.passMessage(msg);
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String mazeName = params[0];
+				
+				// Set maze bounds in x, y, z
+				int x = Integer.parseInt(params[1]), y = Integer.parseInt(params[2]), z = Integer.parseInt(params[3]);
+				
+				// Create and generate new maze with specified bounds
+				MyMaze3dGenerator mg = new MyMaze3dGenerator();
+				Maze3d maze= mg.generate(x, y, z);
+				
+				// Check if the name of the maze already exist
+				if(mazes.containsKey(mazeName))
+				{
+					c.passMessage("The specified name is already in use.");
+					return;
+				}
+				else
+				{
+					mazes.put(mazeName, maze);	
+				}
+				c.passMessage("maze " + mazeName + " is ready");
+			}
+		} ).start();
 	}
 	
 	public void printMaze(String[] params) {
+		String mazeName = params[0];
 		
 		// Check if the specified name exist in the HashMap
-		if(mazes.containsKey(params[0]))
+		if(mazes.containsKey(mazeName))
 		{
-			c.passMaze(mazes.get(params[0]));
+			c.passMaze(mazes.get(mazeName));
 		}
 		else
 		{
@@ -91,25 +100,28 @@ public class MyModel implements Model {
 	}
 
 	public void displayCrossSection(String[] params) {
+		String crossBy = params[0];
+		String index = params[1];
+		String mazeName = params[3];
 		
 		// Check that the name of the maze exist in the HashMap
 		if(mazes.containsKey(params[3]))
 		{
 			// Check for the specified cross section
-			switch(params[0].toLowerCase())
+			switch(crossBy.toLowerCase())
 			{
 				// Pass the right cross section into the controller
 				case "x":	
-					c.passCrossSection(mazes.get(params[3]).getCrossSectionByX(Integer.parseInt(params[1])),mazes.get(params[3]).getY(),mazes.get(params[3]).getZ());
+					c.passCrossSection(mazes.get(mazeName).getCrossSectionByX(Integer.parseInt(index)),mazes.get(mazeName).getY(),mazes.get(mazeName).getZ());
 					break;
 				case "y":
-					c.passCrossSection(mazes.get(params[3]).getCrossSectionByY(Integer.parseInt(params[1])),mazes.get(params[3]).getX(),mazes.get(params[3]).getZ());
+					c.passCrossSection(mazes.get(mazeName).getCrossSectionByY(Integer.parseInt(index)),mazes.get(mazeName).getX(),mazes.get(mazeName).getZ());
 					break;
 				case "z":
-					c.passCrossSection(mazes.get(params[3]).getCrossSectionByZ(Integer.parseInt(params[1])),mazes.get(params[3]).getX(),mazes.get(params[3]).getY());
+					c.passCrossSection(mazes.get(mazeName).getCrossSectionByZ(Integer.parseInt(index)),mazes.get(mazeName).getX(),mazes.get(mazeName).getY());
 					break;
 				default:
-					c.passError(new IOException("Cannot find cross by " + params[0]));
+					c.passError(new IOException("Cannot find cross by " + crossBy));
 					break;
 			}
 		}
@@ -121,12 +133,15 @@ public class MyModel implements Model {
 	}
 	
 	public void saveMaze(String[] params) {
+		String mazeName = params[0];
+		String fileName = params[1];
+		
 		if(mazes.containsKey(params[0]))
 		{
 			try {
 				// Try to save the maze into the file
-				OutputStream out=new MyCompressorOutputStream(new FileOutputStream(params[1]));
-				out.write(mazes.get(params[0]).toByteArray());
+				OutputStream out=new MyCompressorOutputStream(new FileOutputStream(fileName));
+				out.write(mazes.get(mazeName).toByteArray());
 				out.flush();
 				out.close();
 			} catch (Exception e) {
@@ -144,9 +159,12 @@ public class MyModel implements Model {
 	
 	public void loadMaze(String[] params) {
 		int x,y,z;
+		String fileName = params[0];
+		String mazeName = params[1];
 		try {
+			
 			// Try to load the maze from the file
-			MyDecompressorInputStream in=new MyDecompressorInputStream(new FileInputStream(params[0]));
+			MyDecompressorInputStream in=new MyDecompressorInputStream(new FileInputStream(fileName));
 			
 			// At the start array we will insert the details of the maze
 			// start position, end position, bounds of array
@@ -170,7 +188,7 @@ public class MyModel implements Model {
 			System.arraycopy(end, 0, full, start.length, end.length);
 			
 			// Add the maze to the HashMap
-			mazes.put(params[1], new Maze3d(full));
+			mazes.put(mazeName, new Maze3d(full));
 			in.close();
 		} catch (Exception e) {
 			
@@ -180,9 +198,10 @@ public class MyModel implements Model {
 	}
 	
 	public void calcMazeSize(String[] params) {
-		if(mazes.containsKey(params[0]))
+		String mazeName = params[0];
+		if(mazes.containsKey(mazeName))
 		{
-			Maze3d maze = mazes.get(params[0]);
+			Maze3d maze = mazes.get(mazeName);
 			c.passMazeSize((maze.toByteArray()).length);
 		}
 		else
@@ -192,7 +211,8 @@ public class MyModel implements Model {
 	}
 	
 	public void calcFileSize(String[] params) {
-		File file = new File(params[0]);
+		String fileName = params[0];
+		File file = new File(fileName);
 		if(file.exists())
 		{
 			c.passFileSize(file.length());
@@ -205,34 +225,61 @@ public class MyModel implements Model {
 	
 	public void solveMaze(String[] params) {
 		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				String mazeName = params[0];
+				String algorithm = params[1].toLowerCase();
+				Searcher<Position> algo = null;
+				Solution<Position> sol = null;
+				
+				if(mazes.containsKey(mazeName))
+				{
+					Searchable<Position> sm = new Maze3dSearchable(mazes.get(mazeName));
+					if(algorithm.equals("bfs"))
+					{
+						algo = new BFS<Position>();
+					}
+					else if(algorithm.equals("manhattan"))
+					{
+						Heuristic<Position> ManhattanDistance = new MazeManhattanDistance();
+						algo = new AStar<Position>(ManhattanDistance);
+					}
+					else if(algorithm.equals("air"))
+					{
+						Heuristic<Position> AirDistance = new MazeAirDistance();
+						algo = new AStar<Position>(AirDistance);
+					}
+					sol = algo.search(sm);
+					solutions.put(mazeName, sol);
+					c.passMessage("solution for " + mazeName + " is ready");
+				}
+				else
+				{
+					c.passMessage("Specified name doesn't found");
+				}
+			}
+		} ).start();
+	}
+
+	@Override
+	public void displaySolution(String[] params) {
 		String mazeName = params[0];
-		String algorithm = params[1].toLowerCase();
-		Searcher<Position> algo = null;
-		Solution<Position> sol = null;
-		
 		if(mazes.containsKey(mazeName))
 		{
-			Searchable<Position> sm = new Maze3dSearchable(mazes.get(mazeName));
-			if(algorithm.equals("bfs"))
+			if(solutions.containsKey(mazeName))
 			{
-				algo = new BFS<Position>();
+				c.passSolution(solutions.get(mazeName));
 			}
-			else if(algorithm.equals("manhattan"))
+			else
 			{
-				Heuristic<Position> ManhattanDistance = new MazeManhattanDistance();
-				algo = new AStar<Position>(ManhattanDistance);
+				c.passMessage("The maze has no solution");
 			}
-			else if(algorithm.equals("air"))
-			{
-				Heuristic<Position> AirDistance = new MazeAirDistance();
-				algo = new AStar<Position>(AirDistance);
-			}
-			sol = algo.search(sm);
-			c.passMessage("solution for " + mazeName + " is ready");
 		}
 		else
 		{
 			c.passMessage("Specified name doesn't found");
-		}
+		}	
 	}
 }

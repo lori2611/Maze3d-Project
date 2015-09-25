@@ -11,14 +11,7 @@ public class Solve extends AbstractCommand {
 
 	@Override
 	public void doCommand(String[] params) {
-		
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				m.solveMaze(params);
-			}
-		} ).start();
+		m.solveMaze(params);
 	}
 }
 

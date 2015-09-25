@@ -40,6 +40,7 @@ public class MyController implements Controller {
 		commands.put("maze", new MazeSize(m,v));
 		commands.put("file", new FileSize(m,v));
 		commands.put("solve", new Solve(m,v));
+		commands.put("solution", new DisplaySolution(m,v));
 	}
 	
 	public HashMap<String, Command> getCommands() {
@@ -231,10 +232,11 @@ public class MyController implements Controller {
 					if(input.startsWith("display cross section by "))
 					{
 						// Cut the statement of the command and send only the parameters
-						input = input.replace("display cross section by ", "");
 						params = input.split(" ");
-						if(params.length == 4)
+						if(params.length == 8)
 						{
+							input = input.replace("display cross section by ", "");
+							params = input.split(" ");
 							commands.get("cross").doCommand(params);
 						}
 						else
@@ -247,9 +249,15 @@ public class MyController implements Controller {
 						// Cut the statement of the command and send only the parameters
 						input = input.replace("display solution ", "");
 						params = input.split(" ");
-						/**
-						 * Body
-						 */
+						
+						if(params.length == 1)
+						{
+							commands.get("solution").doCommand(params);
+						}
+						else
+						{
+							v.printMessage(NumOfParams_ERR);
+						}
 					}
 					else
 					{

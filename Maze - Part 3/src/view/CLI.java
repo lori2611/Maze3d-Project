@@ -44,37 +44,32 @@ public class CLI implements Runnable{
 	 */
 	public void start()
 	{
-		Thread t = new Thread(this);
-		t.start();
-	}
-	
-	@Override
-	/**
-	 * Run will be activate in a different thread which will get the client command
-	 * and activate the matching methods of the program.
-	 */
-	public void run(){
-		String input;
-		out.println("Please enter your command: ");
-		out.flush();		
-		try {
-			input = in.readLine();
-			
-			// Run while the client doesn't insert "exit"
-			while(!input.equals("exit"))
-			{
-				// Pass the input to the view according to the MVC pattern
-				view.passInput(input);
-				out.println("\nPlease enter your command: ");
-				out.flush();
-				input = in.readLine();
+		new Thread(new Runnable() {			
+			@Override
+			public void run() {
+				String input;
+				out.println("Please enter your command: ");
+				out.flush();		
+				try {
+					input = in.readLine();
+					
+					// Run while the client doesn't insert "exit"
+					while(!input.equals("exit"))
+					{
+						// Pass the input to the view according to the MVC pattern
+						view.passInput(input);
+						out.println("\nPlease enter your command: ");
+						out.flush();
+						input = in.readLine();
+					}
+					out.println("bye bye");
+				} catch (IOException e) {	
+					
+					// Send the exception to the view.
+					view.printError(e);
+				}
+				out.close();
 			}
-			out.println("bye bye");
-		} catch (IOException e) {	
-			
-			// Send the exception to the view.
-			view.printError(e);
-		}
-		out.close();
+		} ).start();
 	}
 }

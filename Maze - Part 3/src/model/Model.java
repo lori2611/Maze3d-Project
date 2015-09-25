@@ -39,4 +39,6 @@ public interface Model {
 	public void calcFileSize(String[] params);
 	
 	public void solveMaze(String[] params);
+	
+	public void displaySolution(String[] params);
 }
