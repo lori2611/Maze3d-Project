@@ -61,9 +61,21 @@ public interface View {
 	 */
 	public void printCrossSection(int[][] maze, int length, int width);
 	
+	/**
+	 * Print the size of the maze in bytes
+	 * @param size
+	 */
 	public void printMazeSize(int size);
 	
+	/**
+	 * Print the size of the file in bytes
+	 * @param size
+	 */
 	public void printFileSize(long size);
 	
+	/**
+	 * Print the solution on the specified maze
+	 * @param sol
+	 */
 	public void printSolution(Solution<Position> sol);
 }

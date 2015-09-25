@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package controller;
 
 import model.Model;
@@ -6,9 +9,9 @@ import view.View;
 public class DisplayMaze extends AbstractCommand {
 
 	/**
-	 * C'tor
-	 * @param m
-	 * @param v
+	 * C'tor.
+	 * @param m the m
+	 * @param v the v
 	 */
 	public DisplayMaze(Model m, View v) {
 		super(m, v);

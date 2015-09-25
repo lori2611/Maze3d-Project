@@ -56,8 +56,9 @@ public class MyView implements View {
 	}
 	
 	public void printError(Exception e) {
+		
+		// Print exception stack trace
 		e.printStackTrace();
-		System.out.println("option2: " + e.getMessage());
 	}
 	
 	public void printMaze(Maze3d maze) {

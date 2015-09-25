@@ -6,22 +6,23 @@ package controller;
 import model.Model;
 import view.View;
 
-public class MazeSize extends AbstractCommand {
+public class Exit extends AbstractCommand {
 
 	/**
-	 * Instantiates a new maze size.
+	 * Instantiates a new exit.
 	 * @param m the m
 	 * @param v the v
 	 */
-	public MazeSize(Model m, View v) {
+	public Exit(Model m, View v) {
 		super(m, v);
 	}
 
 	@Override
 	/**
-	 * DoCommand - this will calculate the size of the maze in bytes
+	 * This will exit the program when all the threads of the commands will terminate
 	 */
 	public void doCommand(String[] params) {
-		m.calcMazeSize(params);
+		m.exit(params);
 	}
+
 }

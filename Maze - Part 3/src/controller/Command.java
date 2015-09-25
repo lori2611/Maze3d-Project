@@ -4,6 +4,7 @@ public interface Command {
 
 	/**
 	 * Do command.
+	 * @param params
 	 */
-	public void doCommand(String[] args);
+	public void doCommand(String[] params);
 }

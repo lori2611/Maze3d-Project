@@ -20,7 +20,6 @@ public class CLI{
 	
 	/**
 	 * Instantiates a new CLI.
-	 *
 	 * @param in the in
 	 * @param out the out
 	 * @param view the view
@@ -62,6 +61,7 @@ public class CLI{
 						out.flush();
 						input = in.readLine();
 					}
+					view.passInput(input);
 					out.println("bye bye");
 				} catch (IOException e) {	
 					

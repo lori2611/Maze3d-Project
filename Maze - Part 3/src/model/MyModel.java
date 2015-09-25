@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Maze3dSearchable;
@@ -27,14 +30,16 @@ import io.MyDecompressorInputStream;
 public class MyModel implements Model {
 
 	private Controller c;
-	HashMap<String,Maze3d> mazes;
-	HashMap<String,Solution<Position>> solutions;
+	private HashMap<String,Maze3d> mazes;
+	private HashMap<String,Solution<Position>> solutions;
+	private ExecutorService threadpool;
 	
-	public static final String NumOfParams_ERR= "Invalid number of parameters \n";
+	public static final String NumOfParams_ERR= "Invalid number of parameters ";
 	
 	public MyModel() {
 		this.mazes = new HashMap<String,Maze3d>();
 		this.solutions = new HashMap<String,Solution<Position>>();
+		this.threadpool = Executors.newFixedThreadPool(5);
 	}
 	
 	public void setC(Controller c) {
@@ -54,22 +59,26 @@ public class MyModel implements Model {
 					if(files.length == 0)
 					{
 						c.passMessage("Folder is empty ");
+						return;
 					}
 					c.passDir(files);
+					return;
 				} catch (Exception e) {
 					c.passMessage("Invalid Path ");
+					return;
 				}
 		}
 		else
 		{
 			c.passMessage(NumOfParams_ERR);
+			return;
 		}
 	}
 	
 	public void generateMaze(String[] params) {
 		if(params.length == 4)
 		{
-		new Thread(new Runnable() {
+			threadpool.execute((new Runnable() {
 			
 			@Override
 			public void run() {
@@ -93,12 +102,14 @@ public class MyModel implements Model {
 					mazes.put(mazeName, maze);	
 				}
 				c.passMessage("maze " + mazeName + " is ready");
+				return;
 			}
-		} ).start();
+		} ));
 		}
 		else
 		{
 			c.passMessage(NumOfParams_ERR);
+			return;
 		}
 	}
 	
@@ -111,16 +122,19 @@ public class MyModel implements Model {
 			if(mazes.containsKey(mazeName))
 			{
 				c.passMaze(mazes.get(mazeName));
+				return;
 			}
 			else
 			{
 				// Pass appropriate message
 				c.passMessage("Specified name doesn't exist.");
+				return;
 			}
 		}
 		else
 		{
 			c.passMessage(NumOfParams_ERR);
+			return;
 		}
 	}
 
@@ -156,11 +170,13 @@ public class MyModel implements Model {
 			{
 				// Name of the maze doesn't exist
 				c.passMessage("Specified name doesn't found");
+				return;
 			}
 		}
 		else
 		{
 			c.passMessage(NumOfParams_ERR);
+			return;
 		}
 	}
 	
@@ -182,17 +198,20 @@ public class MyModel implements Model {
 				
 					// Send error to the controller
 					c.passError(e);
+					return;
 				}
 			}
 			else
 			{
 				// Name of the maze doesn't exist
 				c.passMessage("Specified name doesn't found");
+				return;
 			}
 		}
 		else
 		{
 			c.passMessage(NumOfParams_ERR);
+			return;
 		}
 	}
 	
@@ -235,11 +254,13 @@ public class MyModel implements Model {
 				
 				// Send error to the controller
 				c.passError(e);
+				return;
 			}
 		}
 		else
 		{
 			c.passMessage(NumOfParams_ERR);
+			return;
 		}
 	}
 	
@@ -251,15 +272,18 @@ public class MyModel implements Model {
 			{
 				Maze3d maze = mazes.get(mazeName);
 				c.passMazeSize((maze.toByteArray()).length);
+				return;
 			}
 			else
 			{
 				c.passMessage("Specified name doesn't found");
+				return;
 			}
 		}
 		else
 		{
 			c.passMessage(NumOfParams_ERR);
+			return;
 		}
 	}
 	
@@ -275,18 +299,20 @@ public class MyModel implements Model {
 			else
 			{
 				c.passMessage("File doesn't exist");
+				return;
 			}	
 		}
 		else
 		{
 			c.passMessage(NumOfParams_ERR);
+			return;
 		}
 	}
 	
 	public void solveMaze(String[] params) {
 		if(params.length == 2)
 		{
-			new Thread(new Runnable() {
+			threadpool.execute((new Runnable() {
 				
 				@Override
 				public void run() {
@@ -319,13 +345,15 @@ public class MyModel implements Model {
 					else
 					{
 						c.passMessage("Specified name doesn't found");
+						return;
 					}
 				}
-			} ).start();
+			} ));
 		}
 		else
 		{
 			c.passMessage(NumOfParams_ERR);
+			return;
 		}
 	}
 
@@ -339,20 +367,42 @@ public class MyModel implements Model {
 				if(solutions.containsKey(mazeName))
 				{
 					c.passSolution(solutions.get(mazeName));
+					return;
 				}
 				else
 				{
 					c.passMessage("The maze has no solution");
+					return;
 				}
 			}
 			else
 			{
 				c.passMessage("Specified name doesn't found");
+				return;
 			}	
 		}
 		else
 		{
 			c.passMessage(NumOfParams_ERR);
+			return;
 		}
+	}
+	
+	public void exit(String[] params) {
+		if(params.length == 0)
+		{
+			threadpool.shutdown();
+			try {
+				while(!(threadpool.awaitTermination(5, TimeUnit.SECONDS)));
+			} catch (InterruptedException e) {
+				c.passError(e);
+				return;
+			}
+		}
+		else
+		{
+			c.passMessage(NumOfParams_ERR);
+			return;
+		}	
 	}
 }
