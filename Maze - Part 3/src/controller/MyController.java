@@ -122,6 +122,7 @@ public class MyController implements Controller {
 	 * It will figure the right command and will activate it.
 	 */
 	public void analyzeCommand(String input) {
+		try {
 		ArrayList<String> paramsList = new ArrayList<String>();
 		
 		// Check if the input is a command in the HashMap
@@ -143,8 +144,11 @@ public class MyController implements Controller {
 			String[] params = new String[paramsList.size()];
 			paramsList.toArray(params);
 			
-			// Activat command
+			// Activate command
 			commands.get(input).doCommand(params);
+		}
+		} catch (Exception e) {
+			System.out.println("Invalid Command");
 		}
 	}		
 }

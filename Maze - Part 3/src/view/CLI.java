@@ -6,11 +6,6 @@ package view;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-
-import controller.Command;
-import controller.Dir;
 
 public class CLI{
 	
@@ -47,6 +42,7 @@ public class CLI{
 			@Override
 			public void run() {
 				String input;
+				out.println("----- Command Line -----");
 				out.println("Please enter your command: ");
 				out.flush();		
 				try {
@@ -62,11 +58,11 @@ public class CLI{
 						input = in.readLine();
 					}
 					view.passInput(input);
-					out.println("bye bye");
+					out.println("--- EXIT ---");
 				} catch (IOException e) {	
 					
 					// Send the exception to the view.
-					view.printError(e);
+					view.printMessage("Invalid Command");;
 				}
 				out.close();
 			}
