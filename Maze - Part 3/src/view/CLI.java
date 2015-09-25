@@ -12,7 +12,7 @@ import java.util.Map;
 import controller.Command;
 import controller.Dir;
 
-public class CLI implements Runnable{
+public class CLI{
 	
 	private BufferedReader in;
 	private PrintWriter out;

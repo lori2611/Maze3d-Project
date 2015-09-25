@@ -3,6 +3,9 @@
  */
 package controller;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import algorithms.mazeGenerators.Maze3d;
@@ -20,7 +23,9 @@ public class MyController implements Controller {
 	
 	// Declare all warning - messages
 	public static final String COMMAND_ERR = "Invalid Command \n";	
-	public static final String NumOfParams_ERR= "Invalid number of parameters \n";	
+	public static final String NumOfParams_ERR= "Invalid number of parameters \n";
+	private String[] args;
+	private int i;	
 	
 	/**
 	 * Instantiates a new my controller.
@@ -32,15 +37,15 @@ public class MyController implements Controller {
 		this.v = v;
 		commands = new HashMap<String,Command>();
 		commands.put("dir", new Dir(m,v));
-		commands.put("generate", new Generate(m,v));
+		commands.put("generate 3d maze", new Generate(m,v));
 		commands.put("display", new DisplayName(m,v));
-		commands.put("cross", new DisplayCross(m,v));
-		commands.put("save", new SaveMaze(m,v));
-		commands.put("load", new LoadMaze(m,v));
-		commands.put("maze", new MazeSize(m,v));
-		commands.put("file", new FileSize(m,v));
+		commands.put("display cross section by", new DisplayCross(m,v));
+		commands.put("save maze", new SaveMaze(m,v));
+		commands.put("load maze", new LoadMaze(m,v));
+		commands.put("maze size", new MazeSize(m,v));
+		commands.put("file size", new FileSize(m,v));
 		commands.put("solve", new Solve(m,v));
-		commands.put("solution", new DisplaySolution(m,v));
+		commands.put("display solution", new DisplaySolution(m,v));
 	}
 	
 	public HashMap<String, Command> getCommands() {
@@ -89,192 +94,28 @@ public class MyController implements Controller {
 	}
 	
 	public void analyzeCommand(String input) {
-		String[] args = input.split(" ");
-		String[] params = null;
-		
-		// Check if first word of command exist in HashMap
-		if(!commands.containsKey(args[0]))
+		args = null;
+		i = 1;
+		ArrayList<String> paramsList = new ArrayList<String>();
+		while(!commands.containsKey(input))
 		{
-			v.printMessage(COMMAND_ERR);
+			args = input.split(" ");
+			paramsList.add(input.substring(input.lastIndexOf(" ") + 1));
+			input = input.substring(0, input.lastIndexOf(" "));
+			++i;
+		}
+		if(input.equals(""))
+		{
+			v.printMessage("Invalid command");
 		}
 		else
 		{
-				switch(args[0])
-				{
-				case "dir":
-					if(args.length == 2)
-					{
-						// Cut the 'dir' from the command and send only the parameters
-						input = input.replace("dir ","");
-						params = input.split(" ");
-						commands.get("dir").doCommand(params);
-					}
-					else
-					{
-						v.printMessage(NumOfParams_ERR);
-					}
-					break;
-						
-				case "generate":
-					if(args.length == 7)
-					{
-						if(input.startsWith("generate 3d maze "))
-						{
-							// Cut the statement of the command and send only the parameters
-							input = input.replace("generate 3d maze ","");
-							params = input.split(" ");
-							commands.get("generate").doCommand(params);
-						}
-						else
-						{
-							v.printMessage(COMMAND_ERR);
-						}
-					}
-					else
-					{
-						v.printMessage(NumOfParams_ERR);
-					}
-					break;
-					
-				case "save":
-					if(args.length == 4)
-					{
-						if(input.startsWith("save maze "))
-						{
-							input = input.replace("save maze ", "");
-							params = input.split(" ");
-							commands.get("save").doCommand(params);
-						}
-						else
-							{
-								v.printMessage(COMMAND_ERR);
-							}
-					}
-					else
-					{
-						v.printMessage(NumOfParams_ERR);
-					}
-					break;
-					
-				case "load":
-					if(args.length == 4)
-					{
-						if(input.startsWith("load maze "))
-						{
-							input = input.replace("load maze ", "");
-							params = input.split(" ");
-							commands.get("load").doCommand(params);
-						}
-						else
-						{
-							v.printMessage(COMMAND_ERR);
-						}
-					}
-					else
-					{
-						v.printMessage(NumOfParams_ERR);
-					}
-					break;
-					
-				case "maze":
-					if(args.length == 3)
-					{
-						if(input.startsWith("maze size "))
-						{
-							input = input.replace("maze size ", "");
-							params = input.split(" ");
-							commands.get("maze").doCommand(params);
-						}
-						else
-						{
-							v.printMessage(COMMAND_ERR);
-						}
-					}
-					else						{
-						v.printMessage(NumOfParams_ERR);
-					}
-					break;
-					
-				case "file":
-					if(args.length == 3)
-					{
-						if(input.startsWith("file size "))
-						{
-							input = input.replace("file size ", "");
-							params = input.split(" ");
-							commands.get("file").doCommand(params);
-						}
-						else
-						{
-							v.printMessage(COMMAND_ERR);
-						}
-					}
-					else
-					{
-						v.printMessage(NumOfParams_ERR);
-					}
-					break;
-					
-				case "solve":
-					if(args.length == 3)
-					{
-						input = input.replace("solve ", "");
-						params = input.split(" ");
-						commands.get("solve").doCommand(params);
-					}
-					else
-					{
-						v.printMessage(NumOfParams_ERR);
-					}
-					break;
-					
-				case "display":
-					if(input.startsWith("display cross section by "))
-					{
-						// Cut the statement of the command and send only the parameters
-						params = input.split(" ");
-						if(params.length == 8)
-						{
-							input = input.replace("display cross section by ", "");
-							params = input.split(" ");
-							commands.get("cross").doCommand(params);
-						}
-						else
-						{
-							v.printMessage(NumOfParams_ERR);
-						}
-					}
-					else if (input.startsWith("display solution "))
-					{
-						// Cut the statement of the command and send only the parameters
-						input = input.replace("display solution ", "");
-						params = input.split(" ");
-						
-						if(params.length == 1)
-						{
-							commands.get("solution").doCommand(params);
-						}
-						else
-						{
-							v.printMessage(NumOfParams_ERR);
-						}
-					}
-					else
-					{
-						// Cut the statement of the command and send only the parameters
-						input = input.replace("display ", "");
-						params = input.split(" ");
-						if(params.length == 1)
-						{
-							commands.get("display").doCommand(params);
-						}
-						else
-						{
-							v.printMessage(NumOfParams_ERR);
-						}
-					}
-				}	
-			}
+			Collections.reverse(paramsList);
+			String[] params = new String[paramsList.size()];
+			paramsList.toArray(params);
+			commands.get(input).doCommand(params);
 		}
 	}
+				
+}
 
